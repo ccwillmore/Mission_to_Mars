@@ -4,9 +4,23 @@ from bs4 import BeautifulSoup as bs
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 import pandas as pd
+import datetime as dt
 
-executable_path = {'executable_path': ChromeDriverManager().install()}
-browser = Browser('chrome', **executable_path, headless=False)
+def scrape_all():
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
+
+    news_title, news_paragraph = mars_news(browser)
+
+    data = {
+        "news_title": news_title,
+        "news_paragraph": news_paragraph,
+        "featured_image": featured_image(browser),
+        "facts": mars_facts(browser),
+        "last_modified": dt.datetime.now()
+    }
+    browser.quit()
+    return data
 # First scrape for article title
 
 def mars_news(browser):
@@ -22,7 +36,7 @@ def mars_news(browser):
         summary = slide_elem.find('div', class_='article_teaser_body').get_text()
     except AttributeError:
         return None, None
-return article, summary
+    return article, summary
 
 def featured_image(browser):
     url = 'https://spaceimages-mars.com'
@@ -53,4 +67,7 @@ def mars_facts(browser):
 
     return mars_facts_df.to_html()
 
-browser.quit()
+if __name__ == "__main__":
+
+    # If running as script, print scraped data
+    print(scrape_all())
