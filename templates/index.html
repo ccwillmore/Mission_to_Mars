@@ -1,25 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Mission to Mars</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
   </head>
-<body>
-  
-    <h1>Hello, Earthling!</h1>
-    <div class="jumbotron text-center"></div>
-      <p>
-      Welcome to the Mars data page.  
-      </p>
-      <a href="http://127.0.0.1:5000/scrape" class="btn btn-primary"> Call the scraper</a>
-      <ul>
-         <li>First list item</li>
-        <li>Second list item</li>
-        <li>Third list item</li>
-      </ul>
-</body>
+  <body>
+    <div class="container">  
+      <!-- Add Jumbotron to Header -->
+      <div class="jumbotron text-center" style = "background-color: paleturquoise;">  
+          <h1>Mission to Mars</h1>
+        <!-- Add a button to activate scraping script -->
+          <p><a class="btn btn-danger btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+      </div>
+
+      <!-- Add section for Mars News -->
+      <div class="row" id="mars-news">
+          <div class="media">
+            <div class="media-body">
+            <h2 style = "background-color: yellow;">Latest Mars News</h2>
+            <h4 class="media-heading"><mark>{{ mars.news_title }}</mark></h4>
+            <p>{{ mars.news_paragraph }}</p>
+          </div>
+        </div>
+      </div>
+      
+
+      <!-- Section for Featured Image and Facts table -->
+      <div class="row" id="mars-featured-image">
+        <div class="col-md-8">
+          <h2 style = "background-color: yellow;">Featured Mars Image</h2>
+
+          <!-- if images is False/None/non-existent, then default to error message -->
+          <img
+            src="{{mars.featured_image | default('static/images/error.png', true) }}"
+            class="img-responsive"
+            alt="Responsive image"
+          />
+        </div>
+
+        <div class="col-md-4" >
+          <!-- Mars Facts -->
+          <div class="row" id="mars-facts">
+            <h4 style = "background-color: yellow;">Mars Facts</h4>
+            {{ mars.facts | safe }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Section for Mars Hemispheres -->
+      <div class="row" id="mars-hemispheres">
+        <div class="page-header">
+          <h2 class="text-center" style = "background-color: yellow;">Mars Hemispheres</h2>
+        </div>
+
+        {% for hemisphere in mars.hemispheres %}
+        <div class="col-md-6">
+          <div class="thumbnail">
+            <img src="{{hemisphere.img_url | default('static/images/error.png', true)}}" alt="...">
+            <div class="caption">
+              <h3>{{hemisphere.title}}</h3>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
 </html>
